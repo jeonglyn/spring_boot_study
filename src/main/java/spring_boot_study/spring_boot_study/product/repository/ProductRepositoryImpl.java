@@ -36,7 +36,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product update(Product product) {
-        products.put(product);
-        return updated;
+        products.put(product.getId(), product);
+        return product;
     }
 }

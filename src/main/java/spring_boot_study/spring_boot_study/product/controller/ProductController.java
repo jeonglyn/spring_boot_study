@@ -3,6 +3,7 @@ package spring_boot_study.spring_boot_study.product.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import spring_boot_study.spring_boot_study.common.ApiResponse;
 import spring_boot_study.spring_boot_study.product.dto.ProductRequestDto;
 import spring_boot_study.spring_boot_study.product.dto.ProductResponseDto;
 import spring_boot_study.spring_boot_study.product.service.ProductService;
@@ -18,32 +19,35 @@ public class ProductController {
         this.productService = productService;
     }
 
+
     @PostMapping
-    public ResponseEntity<ProductResponseDto> insert(@Valid @RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<ProductResponseDto>> insert(@Valid @RequestBody ProductRequestDto requestDto) {
         ProductResponseDto response = productService.insertProduct(requestDto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(ApiResponse.success(response));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProduct(id));
+    public ResponseEntity<ApiResponse<ProductResponseDto>> getProduct(@PathVariable Long id) {
+        ProductResponseDto data = productService.getProduct(id);
+        return ResponseEntity.ok(ApiResponse.success(data));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<ApiResponse<List<ProductResponseDto>>> getAllProducts() {
+        List<ProductResponseDto> list = productService.getAllProducts();
+        return ResponseEntity.ok(ApiResponse.success(list));
     }
 
     @PatchMapping("/{id}/stock")
-    public ResponseEntity<ProductResponseDto>  updateStock(@PathVariable Long id, @Valid @RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<ProductResponseDto>> updateStock(@PathVariable Long id, @Valid @RequestBody ProductRequestDto requestDto) {
         ProductResponseDto update = productService.updateProduct(id, requestDto.stock());
-        return ResponseEntity.ok(update);
+        return ResponseEntity.ok(ApiResponse.success(update, "재고가 수정되었습니다."));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "삭제되었습니다."));
     }
 
 }
