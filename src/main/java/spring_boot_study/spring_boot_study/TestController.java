@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 @RestController
 @RequestMapping("/api/members")
 @Validated
-public class MemberController {
+public class TestController {
 
     @GetMapping("/hello")
     public String answer() {

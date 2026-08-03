@@ -3,6 +3,7 @@ package spring_boot_study.spring_boot_study.practice.point.service;
 import org.springframework.stereotype.Service;
 import spring_boot_study.spring_boot_study.practice.point.domain.Point;
 import spring_boot_study.spring_boot_study.practice.point.dto.PointResponseDto;
+import spring_boot_study.spring_boot_study.practice.point.exception.PointNotEnoughException;
 import spring_boot_study.spring_boot_study.practice.point.repository.PointRepository;
 
 /*
@@ -38,14 +39,30 @@ public class PointService {
         // TODO: pointRepository.findByMemberId(memberId)를 사용해서
         //       존재하지 않으면 IllegalArgumentException을 던지고,
         //       존재하면 PointResponseDto.from(...)으로 변환해서 반환하세요.
-        throw new UnsupportedOperationException("TODO: getPoint를 구현하세요.");
+        Point point = pointRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원번호 입니다: " + memberId));
+        //throw new UnsupportedOperationException("TODO: getPoint를 구현하세요.");
+        return PointResponseDto.from(point);
     }
 
     public PointResponseDto usePoint(Long memberId, Long amount) {
         // TODO:
         // 1) 회원 조회 (없으면 IllegalArgumentException)
+        Point point = pointRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원번호 입니다:" + memberId));
+
+
         // 2) amount > balance 이면 PointNotEnoughException
+        if(point.getBalance() < amount) {
+            throw new PointNotEnoughException("포인트 잔액이 부족합니다. 잔액: " + point.getBalance());
+        }
+
         // 3) 문제 없으면 새 Point(memberId, balance - amount)를 만들어 repository.update() 후 반환
-        throw new UnsupportedOperationException("TODO: usePoint를 구현하세요.");
+        Point updated = new Point(point.getMemberId(), point.getBalance() - amount);
+
+        Point saved = pointRepository.update(updated);
+//        throw new UnsupportedOperationException("TODO: usePoint를 구현하세요.");
+
+        return PointResponseDto.from(saved);
     }
 }

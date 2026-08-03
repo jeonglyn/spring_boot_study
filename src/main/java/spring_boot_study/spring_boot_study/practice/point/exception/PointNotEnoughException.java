@@ -13,7 +13,17 @@ package spring_boot_study.spring_boot_study.practice.point.exception;
 //   throw new PointNotEnoughException("포인트 잔액이 부족합니다. 현재 잔액: " + balance);
 
 public class PointNotEnoughException extends RuntimeException {
-
     // TODO: message를 받는 생성자를 작성하세요.
+    // 여기서 record를 쓸 수 없었던 이유
+    // -> Java는 클래스 하나가 부모를 하나만 가질 수 있다.
+    //    근데 해당 클래스는 이미 RuntimeException을 상속하고 있으며,
+    //    record의 경우 이미 내부적으로 java.lang.Record 라는 걸 상속하고 있다.
+    //    따라서 record는 사용할 수 없었다.
+    public PointNotEnoughException(String message) {
+        super(message);
+        // super는 부모 클래스의 생성자를 호출하라는 뜻
+    }
+
+
 
 }

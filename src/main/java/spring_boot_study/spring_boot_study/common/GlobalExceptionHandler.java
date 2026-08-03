@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import spring_boot_study.spring_boot_study.practice.point.exception.PointNotEnoughException;
 
 // @RestControllerAdvice :모든 RestController에서 던져지는 예외를 여기서 처리
 // 컨트롤러 하나하나에 try-catch를 넣지 않아도 되는 이유이다
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     // 1) 서비스 로직에서 직접 던진 IllegalArgumentException처리
     //    - ex) "존재하지 않는 물품입니다" (findById 실패 예시)
@@ -47,4 +50,17 @@ public class GlobalExceptionHandler {
                 "서버 내부 오류가 발생하였습니다.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+
+
+    // 4) Exception 실습용
+    @ExceptionHandler(PointNotEnoughException.class)
+    public ResponseEntity<ErrorResponse> handlePointNotEnoughException(PointNotEnoughException e) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
 }
