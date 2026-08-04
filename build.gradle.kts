@@ -31,6 +31,11 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testAnnotationProcessor("org.projectlombok:lombok")
+
+    // 스프링 시큐리티 관련
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    // 테스트에서 Security 관련 유틸(예: SecurityMockMvcRequestPostProcessors)을 쓰려면 아래도 추가
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<Test> {
