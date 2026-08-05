@@ -45,7 +45,17 @@ public class SecurityConfig {
     //      (스프링이 위에서 등록한 PasswordEncoder 빈을 자동으로 주입해줍니다 — 이것도 힌트!)
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user1 = User.builder()
+                                .username("user")
+                                .password(passwordEncoder.encode("1234"))
+                                .roles("USER")
+                                .build();
 
+        UserDetails user2 = User.builder()
+                                .username("admin")
+                                .password(passwordEncoder.encode("1234"))
+                                .roles("ADMIN")
+                                .build();
 
 
         return  new InMemoryUserDetailsManager(user1, user2);
@@ -80,13 +90,17 @@ public class SecurityConfig {
                 // - 그 외 나머지 모든 요청은 인증(로그인)만 되어 있으면 접근 가능 (authenticated)
                 .authorizeHttpRequests(auth -> auth
                         // 여기에 requestMatchers(...) 규칙 작성
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
 
                 // ===HTTP Basic 인증===
                 // TODO 4: 이번엔 Postman에서 Basic Auth로 테스트할 예정이라 꺼두면 안 됩니다.
                 // disable() 대신 Customizer.withDefaults() 를 사용하세요.
                 // (formLogin은 REST API에 필요 없으니 계속 꺼둔 채로 둡니다.)
-                .httpBasic(basic -> basic.disable())
+//                .httpBasic(basic -> basic.disable()) => 꺼두는 상태
+                .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form.disable());
 
         return http.build();
