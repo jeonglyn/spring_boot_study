@@ -1,4 +1,4 @@
-package spring_boot_study.spring_boot_study.practice;
+package spring_boot_study.spring_boot_study.practice.java25;
 
 /*
 * Java 버전 및 LTS 여부를 확인하는 간단한 유틸리티 클래스
